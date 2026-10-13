@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointments - ClinicCare Management</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom Modern Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Modern Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand brand-title" href="dashboard.html">
+        <span class="p-2 rounded-3 bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+          <i class="bi bi-hospital"></i>
+        </span>
+        ClinicCare <span class="brand-badge">Demo</span>
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="dashboard.html">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="patients.html">
+              <i class="bi bi-people-fill"></i> Patients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="doctors.html">
+              <i class="bi bi-person-badge-fill"></i> Doctors
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom active" href="appointments.html">
+              <i class="bi bi-calendar2-check-fill"></i> Appointments
+            </a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="add_appointment.html" class="btn btn-clinic-primary btn-sm">
+            <i class="bi bi-calendar-plus-fill"></i> Book Appointment
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container my-4 flex-grow-1">
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+      <div>
+        <h2 class="fw-bold mb-1" style="color: #0f172a;">
+          <i class="bi bi-calendar2-check text-purple me-1" style="color: #8b5cf6;"></i> Clinic Appointments
+        </h2>
+        <p class="text-secondary mb-0">
+          Relational SQL JOIN query: <code>appointments JOIN patients JOIN doctors</code>
+        </p>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <div class="search-input-group">
+          <i class="bi bi-search"></i>
+          <input 
+            type="text" 
+            id="search-box" 
+            class="form-control" 
+            placeholder="Search patient, doctor, reason..." 
+            onkeyup="filterAppointments()"
+          >
+        </div>
+        <a href="add_appointment.html" class="btn btn-clinic-primary">
+          <i class="bi bi-plus-lg"></i> Book Appointment
+        </a>
+      </div>
+    </div>
+
+    <!-- Appointments Card & Table -->
+    <div class="card-modern">
+      <div class="p-3 px-4 border-bottom d-flex justify-content-between align-items-center bg-light-subtle flex-wrap gap-2">
+        <h6 class="fw-bold mb-0 text-secondary">
+          Scheduled Appointments (<span id="count-appointments" class="text-primary fw-bold">0</span>)
+        </h6>
+        <span class="badge bg-white text-secondary border">
+          <i class="bi bi-database me-1 text-primary"></i> SQL Server: clinic_db
+        </span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-modern align-middle">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 70px;">ID</th>
+              <th scope="col">Patient Name</th>
+              <th scope="col">Attending Doctor</th>
+              <th scope="col">Specialization</th>
+              <th scope="col">Appointment Date & Time</th>
+              <th scope="col">Reason / Symptoms</th>
+              <th scope="col" class="text-end" style="width: 170px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="appointments-tbody">
+            <tr>
+              <td colspan="7" class="empty-state-box">
+                <div class="spinner-border text-primary" role="status"></div>
+                <div class="mt-2 text-muted">Querying relational appointment records...</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="clinic-footer text-center">
+    <div class="container">
+      <p class="mb-1 fw-semibold text-secondary">🏥 Hospital / Clinic Management System &bull; Fullstack Demo</p>
+      <small class="text-muted">Built with Python Flask + Microsoft SQL Server (SSMS) + Bootstrap 5</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Helper -->
+  <script src="js/api.js"></script>
+  <script>
+    let appointmentsData = [];
+
+    async function loadAppointments() {
+      try {
+        appointmentsData = await apiGet('/appointments');
+        renderAppointments(appointmentsData);
+      } catch (err) {
+        console.error(err);
+        showToast('Error loading appointments: ' + err.message, 'error');
+      }
+    }
+
+    function renderAppointments(appointments) {
+      document.getElementById('count-appointments').innerText = appointments.length;
+      const tbody = document.getElementById('appointments-tbody');
+
+      if (appointments.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state-box">
+              <div class="empty-state-icon"><i class="bi bi-calendar-x"></i></div>
+              <h6 class="fw-bold">No appointments found</h6>
+              <p class="text-muted small">No scheduled visits match your search. Schedule one using the button above.</p>
+              <a href="add_appointment.html" class="btn btn-clinic-primary btn-sm">+ Book Appointment</a>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = appointments.map(a => `
+        <tr>
+          <td><span class="badge bg-light text-secondary border">#${a.id}</span></td>
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <div class="avatar-circle avatar-blue">${getInitials(a.patient)}</div>
+              <div>
+                <div class="fw-bold text-dark">${a.patient}</div>
+                <small class="text-muted">Patient ID: #${a.patientId}</small>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <div class="avatar-circle avatar-teal">${getInitials(a.doctor)}</div>
+              <div>
+                <div class="fw-semibold text-dark">${a.doctor}</div>
+                <small class="text-muted">Dr. ID: #${a.doctorId}</small>
+              </div>
+            </div>
+          </td>
+          <td>${getSpecialtyBadge(a.specialization)}</td>
+          <td>${formatDateTime(a.appointmentDate)}</td>
+          <td>
+            <span class="badge bg-light text-dark border fw-normal px-2 py-1">
+              ${a.reason || 'General Consultation'}
+            </span>
+          </td>
+          <td class="text-end">
+            <div class="btn-group btn-group-sm">
+              <a href="edit_appointment.html?id=${a.id}" class="btn btn-outline-secondary py-1 px-2 rounded-start-2" title="Edit Appointment">
+                <i class="bi bi-pencil-square"></i> Edit
+              </a>
+              <button onclick="deleteAppointment(${a.id}, '${a.patient.replace(/'/g, "\\'")}')" class="btn btn-outline-danger py-1 px-2 rounded-end-2" title="Cancel Appointment">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterAppointments() {
+      const q = document.getElementById('search-box').value.toLowerCase().trim();
+      const filtered = appointmentsData.filter(a => 
+        (a.patient && a.patient.toLowerCase().includes(q)) || 
+        (a.doctor && a.doctor.toLowerCase().includes(q)) ||
+        (a.specialization && a.specialization.toLowerCase().includes(q)) ||
+        (a.reason && a.reason.toLowerCase().includes(q))
+      );
+      renderAppointments(filtered);
+    }
+
+    async function deleteAppointment(id, patientName) {
+      if (!confirm(`Are you sure you want to cancel appointment #${id} for ${patientName}?`)) {
+        return;
+      }
+
+      try {
+        await apiDelete(`/appointments/${id}`);
+        showToast(`Appointment #${id} cancelled successfully`, 'success');
+        loadAppointments();
+      } catch (err) {
+        console.error(err);
+        showToast('Failed to cancel appointment: ' + err.message, 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAppointments);
+  </script>
+</body>
+</html>

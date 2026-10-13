@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Doctor - ClinicCare Management</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom Modern Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Modern Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand brand-title" href="dashboard.html">
+        <span class="p-2 rounded-3 bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+          <i class="bi bi-hospital"></i>
+        </span>
+        ClinicCare <span class="brand-badge">Demo</span>
+      </a>
+      <div class="collapse navbar-collapse show">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
+          <li class="nav-item"><a class="nav-link nav-link-custom" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-custom" href="patients.html"><i class="bi bi-people-fill"></i> Patients</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-custom active" href="doctors.html"><i class="bi bi-person-badge-fill"></i> Doctors</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-custom" href="appointments.html"><i class="bi bi-calendar2-check-fill"></i> Appointments</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container my-5 flex-grow-1">
+    <div class="form-card">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h3 class="fw-bold mb-1" style="color: #0f172a;">
+            <i class="bi bi-person-plus text-success me-2"></i>Register Doctor
+          </h3>
+          <p class="text-secondary small mb-0">Add a medical practitioner and specialty to the clinic roster</p>
+        </div>
+        <a href="doctors.html" class="btn btn-clinic-secondary btn-sm">
+          <i class="bi bi-arrow-left"></i> Back
+        </a>
+      </div>
+
+      <form id="add-doctor-form">
+        <!-- Doctor Name -->
+        <div class="mb-3">
+          <label for="name" class="form-label">Doctor Name <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+            <input type="text" id="name" class="form-control" placeholder="e.g. Dr. Rajesh Kannan" required>
+          </div>
+        </div>
+
+        <!-- Specialization -->
+        <div class="mb-3">
+          <label for="specialization" class="form-label">Medical Specialization</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-heart-pulse"></i></span>
+            <input 
+              type="text" 
+              id="specialization" 
+              class="form-control" 
+              placeholder="Select or type (e.g. General Physician, Dentist...)" 
+              list="specialization-suggestions"
+            >
+            <datalist id="specialization-suggestions">
+              <option value="General Physician">
+              <option value="Dentist">
+              <option value="Pediatrician (Child Specialist)">
+              <option value="ENT Specialist">
+              <option value="Orthopedic (Bone Specialist)">
+              <option value="Eye Specialist">
+              <option value="Dermatologist (Skin)">
+              <option value="Gynecologist">
+            </datalist>
+          </div>
+        </div>
+
+        <!-- Phone Contact -->
+        <div class="mb-4">
+          <label for="phone" class="form-label">Phone / OPD Direct Line</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+            <input type="tel" id="phone" class="form-control" placeholder="e.g. 9444022334">
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+          <a href="doctors.html" class="btn btn-clinic-secondary">Cancel</a>
+          <button type="submit" id="btn-save" class="btn btn-clinic-primary">
+            <i class="bi bi-check-lg"></i> Save Doctor Record
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="clinic-footer text-center">
+    <div class="container">
+      <small class="text-muted">🏥 Hospital / Clinic Management System &bull; Python Flask + SQL Server Demo</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Helper -->
+  <script src="js/api.js"></script>
+  <script>
+    const form = document.getElementById('add-doctor-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const saveBtn = document.getElementById('btn-save');
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Saving...';
+
+      const payload = {
+        name: document.getElementById('name').value.trim(),
+        specialization: document.getElementById('specialization').value.trim() || null,
+        phone: document.getElementById('phone').value.trim() || null
+      };
+
+      try {
+        await apiPost('/doctors', payload);
+        showToast('Doctor profile created successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = 'doctors.html';
+        }, 700);
+      } catch (err) {
+        console.error(err);
+        showToast('Error saving doctor: ' + err.message, 'error');
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="bi bi-check-lg"></i> Save Doctor Record';
+      }
+    });
+  </script>
+</body>
+</html>

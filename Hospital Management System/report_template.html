@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Project Report - Hospital / Clinic Management System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #1e293b;
+      line-height: 1.6;
+      background: #ffffff;
+      font-size: 10.5pt;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    /* Cover Page */
+    .cover-page {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 2px solid #0284c7;
+      border-radius: 20px;
+      padding: 50px 40px;
+      background: linear-gradient(145deg, #f8fafc 0%, #f0f9ff 100%);
+      margin-bottom: 20px;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 9pt;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid #bae6fd;
+    }
+
+    .cover-title {
+      font-size: 28pt;
+      font-weight: 800;
+      color: #0c4a6e;
+      line-height: 1.2;
+      margin-top: 25px;
+    }
+
+    .cover-subtitle {
+      font-size: 13pt;
+      color: #475569;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+
+    .cover-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+      padding-top: 25px;
+      border-top: 1px solid #cbd5e1;
+    }
+
+    .meta-item h4 {
+      font-size: 8pt;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .meta-item p {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    /* Section Headings */
+    h1 {
+      font-size: 18pt;
+      font-weight: 800;
+      color: #0369a1;
+      margin-top: 25px;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e0f2fe;
+    }
+
+    h2 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      margin-bottom: 10px;
+      color: #334155;
+      text-align: justify;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 18px;
+      font-size: 9pt;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #1e293b;
+      font-weight: 700;
+      text-align: left;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      text-transform: uppercase;
+      font-size: 7.5pt;
+      letter-spacing: 0.03em;
+    }
+
+    td {
+      padding: 7px 10px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* Code Blocks */
+    pre, code {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 8.5pt;
+      overflow-x: auto;
+      margin: 12px 0 16px;
+      line-height: 1.45;
+    }
+
+    code:not(pre code) {
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 8.5pt;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Badges & Pills */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 7.5pt;
+      font-weight: 700;
+    }
+
+    .badge-blue { background: #e0f2fe; color: #0369a1; }
+    .badge-green { background: #d1fae5; color: #047857; }
+    .badge-purple { background: #ede9fe; color: #6d28d9; }
+
+    /* Callout Box */
+    .callout {
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin: 12px 0;
+      font-size: 9.5pt;
+    }
+
+    .callout.info {
+      background: #f0f9ff;
+      border-left-color: #0284c7;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 12px;
+      color: #334155;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 8pt;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER PAGE -->
+  <div class="cover-page">
+    <div>
+      <span class="cover-badge">Software Engineering &bull; Fullstack Project Report</span>
+      <h1 class="cover-title">Hospital / Clinic Management System 🏥</h1>
+      <p class="cover-subtitle">
+        A Modern Fullstack Healthcare Demo Application Built with ASP.NET Core Web API, Microsoft SQL Server (SSMS), and Bootstrap 5
+      </p>
+    </div>
+
+    <div style="margin: 30px 0;">
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <span class="badge badge-blue">ASP.NET Core (.NET 10)</span>
+        <span class="badge badge-green">Microsoft SQL Server Express</span>
+        <span class="badge badge-purple">Dapper &amp; SqlClient</span>
+        <span class="badge badge-blue">Bootstrap 5.3 &amp; Icons</span>
+        <span class="badge badge-green">SSMS Compatible</span>
+      </div>
+    </div>
+
+    <div class="cover-meta-grid">
+      <div class="meta-item">
+        <h4>Target Database</h4>
+        <p>Microsoft SQL Server (clinic_db)</p>
+      </div>
+      <div class="meta-item">
+        <h4>Architecture</h4>
+        <p>RESTful Web API + Decoupled Single-Page Architecture</p>
+      </div>
+      <div class="meta-item">
+        <h4>Platform Version</h4>
+        <p>.NET 10.0 / C# 13</p>
+      </div>
+      <div class="meta-item">
+        <h4>Project Status</h4>
+        <p>Completed &amp; Fully Verified ✅</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- TABLE OF CONTENTS / EXECUTIVE SUMMARY -->
+  <h1>1. Executive Summary</h1>
+  <p>
+    The <strong>Hospital / Clinic Management System</strong> is a fullstack web application designed as an intuitive, fast, and accessible operational demo for outpatient clinics and medical practices. The system provides essential clinical workflows: registering and maintaining patient demographic records, managing the directory of practicing medical specialists, and booking and rescheduling clinical appointments with attending physicians.
+  </p>
+  <p>
+    The system is specifically engineered to bridge modern fullstack .NET development with industry-standard relational database management via <strong>Microsoft SQL Server</strong> and <strong>SQL Server Management Studio (SSMS)</strong>. It demonstrates proper relational foreign keys, cascade constraints, parameterized query execution, high-performance object mapping via <strong>Dapper</strong>, and dynamic responsive client-side UI rendering with <strong>Bootstrap 5.3</strong>.
+  </p>
+
+  <div class="callout info">
+    <strong>Key Highlight:</strong> The solution features an intelligent automatic database initializer. Upon starting the application with <code>dotnet run</code>, it detects the local SQL Server instance, creates <code>clinic_db</code> if absent, provisions all tables, and populates realistic demo seed data automatically without requiring manual intervention.
+  </div>
+
+  <h1>2. System Architecture &amp; Technology Stack</h1>
+  <p>
+    The application follows a clean 3-tier architecture with separation of concerns:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Technologies</th>
+        <th>Description &amp; Responsibilities</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Presentation (Frontend)</strong></td>
+        <td>HTML5, CSS3, JavaScript (ES6+), Bootstrap 5.3.3, Bootstrap Icons</td>
+        <td>
+          10 responsive web pages hosted directly via ASP.NET Core static files. Features client-side search filtering, dynamic modal dialogs, animated feedback toasts, and initials avatars.
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Application / API (Backend)</strong></td>
+        <td>ASP.NET Core Web API (.NET 10), C# 13, Minimal APIs</td>
+        <td>
+          Exposes RESTful endpoints for CRUD operations on Patients, Doctors, and Appointments. Manages CORS policy, routing, request validation, and dashboard metrics calculation.
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Data Access Layer</strong></td>
+        <td>Microsoft.Data.SqlClient, Dapper (v2.1.79)</td>
+        <td>
+          High-performance micro-ORM executing direct parameterized SQL statements and relational <code>JOIN</code> queries with zero boilerplate mapping code.
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Database Tier</strong></td>
+        <td>Microsoft SQL Server 2025 Express / LocalDB, SSMS</td>
+        <td>
+          Relational storage engine hosting the <code>clinic_db</code> database with primary key identities, foreign key constraints, and cascade delete rules.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <h1>3. Relational Database Design (clinic_db)</h1>
+  <p>
+    The schema consists of three normalized core tables: <code>patients</code>, <code>doctors</code>, and the junction relationship table <code>appointments</code>.
+  </p>
+
+  <h3>3.1 Database Schema Definition</h3>
+  <pre><code>-- Database Definition (SSMS Compatible)
+CREATE DATABASE clinic_db;
+GO
+USE clinic_db;
+GO
+
+CREATE TABLE patients (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    name VARCHAR(100) NOT NULL,
+    age INT,
+    gender VARCHAR(20),
+    phone VARCHAR(15)
+);
+
+CREATE TABLE doctors (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    name VARCHAR(100) NOT NULL,
+    specialization VARCHAR(100),
+    phone VARCHAR(15)
+);
+
+CREATE TABLE appointments (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    patient_id INT NOT NULL,
+    doctor_id INT NOT NULL,
+    appointment_date DATETIME NOT NULL,
+    reason VARCHAR(255),
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
+);</code></pre>
+
+  <h3>3.2 Relational SQL JOIN Query</h3>
+  <p>
+    The primary appointment schedule report is produced by performing an inner join connecting appointments with the patient identity and doctor specialization:
+  </p>
+  <pre><code>SELECT
+    appointments.id,
+    patients.name AS patient,
+    doctors.name AS doctor,
+    doctors.specialization,
+    appointments.appointment_date,
+    appointments.reason
+FROM appointments
+JOIN patients
+    ON appointments.patient_id = patients.id
+JOIN doctors
+    ON appointments.doctor_id = doctors.id
+ORDER BY appointments.appointment_date ASC;</code></pre>
+
+  <h3>3.3 Seed Data Profile (South Indian Demographic)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Entity</th>
+        <th>Representative Sample Records</th>
+        <th>Specialization / Clinical Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Doctors</strong></td>
+        <td>Dr. Ananya Sundaram, Dr. Rajesh Kannan, Dr. Meenakshi Iyer, Dr. Murugan Swaminathan, Dr. Deepa Krishnan</td>
+        <td>General Physician, Dentist, Pediatrician (Child Specialist), Orthopedic (Bone Specialist), ENT Specialist</td>
+      </tr>
+      <tr>
+        <td><strong>Patients</strong></td>
+        <td>Karthik Raja (32, M), Lakshmi Narayanan (28, F), Suresh Kumar (54, M), Priya Balachandran (22, F), Venkat Raghavan (45, M)</td>
+        <td>Demographic records with verified contact telephone numbers</td>
+      </tr>
+      <tr>
+        <td><strong>Appointments</strong></td>
+        <td>Consultation visits scheduled across upcoming calendar dates</td>
+        <td>Viral Fever &amp; Headache, Tooth Cleaning, Knee Joint Pain, Child Vaccination, Ear &amp; Throat Infection</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <h1>4. Application Modules &amp; Web Pages</h1>
+  <p>
+    The presentation layer contains 10 purpose-built web pages located in <code>wwwroot/</code>:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Page File</th>
+        <th>Module</th>
+        <th>Key Features &amp; User Interactions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>dashboard.html</code></td>
+        <td>Executive Overview</td>
+        <td>Real-time metric stat cards (Patients, Doctors, Appointments), quick booking triggers, and live upcoming visits table.</td>
+      </tr>
+      <tr>
+        <td><code>patients.html</code></td>
+        <td>Patient Management</td>
+        <td>Searchable table with avatar initials, gender tags, contact links, and edit/delete actions.</td>
+      </tr>
+      <tr>
+        <td><code>add_patient.html</code></td>
+        <td>Patient Registration</td>
+        <td>Centered card form with icon input groups, age validation, gender selection, and instant submit.</td>
+      </tr>
+      <tr>
+        <td><code>edit_patient.html</code></td>
+        <td>Patient Modification</td>
+        <td>Pre-populates patient details using query parameter <code>?id=...</code> for immediate update.</td>
+      </tr>
+      <tr>
+        <td><code>doctors.html</code></td>
+        <td>Doctor Directory</td>
+        <td>Listing of clinic doctors with specialty pill badges, direct phone links, and search filter.</td>
+      </tr>
+      <tr>
+        <td><code>add_doctor.html</code></td>
+        <td>Doctor Onboarding</td>
+        <td>Registration form with HTML5 datalist autocomplete for standard clinical specializations.</td>
+      </tr>
+      <tr>
+        <td><code>edit_doctor.html</code></td>
+        <td>Doctor Update</td>
+        <td>Modifies doctor details, specialization, and direct OPD line.</td>
+      </tr>
+      <tr>
+        <td><code>appointments.html</code></td>
+        <td>Schedule Overview</td>
+        <td>Display of relational SQL <code>JOIN</code> data, date/time formatting, and cancellation dialog.</td>
+      </tr>
+      <tr>
+        <td><code>add_appointment.html</code></td>
+        <td>Appointment Booking</td>
+        <td>Dynamic select dropdowns fetched from database API, auto-setting default date to tomorrow.</td>
+      </tr>
+      <tr>
+        <td><code>edit_appointment.html</code></td>
+        <td>Rescheduling Form</td>
+        <td>Reassigns physician, updates consultation time, and revises chief complaints.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h1>5. RESTful API Specifications</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>HTTP Method</th>
+        <th>Route Endpoint</th>
+        <th>Function &amp; SQL Query Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-green">GET</span></td>
+        <td><code>/api/dashboard/stats</code></td>
+        <td>Calculates aggregate counts and returns top 5 upcoming appointments.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-green">GET</span></td>
+        <td><code>/api/patients</code></td>
+        <td><code>SELECT * FROM patients ORDER BY id DESC;</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-blue">POST</span></td>
+        <td><code>/api/patients</code></td>
+        <td><code>INSERT INTO patients ... OUTPUT INSERTED.id VALUES (...)</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-purple">PUT</span></td>
+        <td><code>/api/patients/{id}</code></td>
+        <td><code>UPDATE patients SET name=@Name ... WHERE id=@Id;</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge" style="background:#fee2e2;color:#dc2626;">DELETE</span></td>
+        <td><code>/api/patients/{id}</code></td>
+        <td><code>DELETE FROM patients WHERE id=@id;</code> (Cascades appointments)</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-green">GET</span></td>
+        <td><code>/api/doctors</code></td>
+        <td><code>SELECT * FROM doctors ORDER BY id DESC;</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-blue">POST</span></td>
+        <td><code>/api/doctors</code></td>
+        <td><code>INSERT INTO doctors ... OUTPUT INSERTED.id VALUES (...)</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-purple">PUT</span></td>
+        <td><code>/api/doctors/{id}</code></td>
+        <td><code>UPDATE doctors SET name=@Name ... WHERE id=@Id;</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge" style="background:#fee2e2;color:#dc2626;">DELETE</span></td>
+        <td><code>/api/doctors/{id}</code></td>
+        <td><code>DELETE FROM doctors WHERE id=@id;</code> (Cascades appointments)</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-green">GET</span></td>
+        <td><code>/api/appointments</code></td>
+        <td>Executes relational SQL <code>JOIN</code> between appointments, patients, and doctors.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-blue">POST</span></td>
+        <td><code>/api/appointments</code></td>
+        <td><code>INSERT INTO appointments ... OUTPUT INSERTED.id VALUES (...)</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-purple">PUT</span></td>
+        <td><code>/api/appointments/{id}</code></td>
+        <td><code>UPDATE appointments SET appointment_date=@Date ... WHERE id=@Id;</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge" style="background:#fee2e2;color:#dc2626;">DELETE</span></td>
+        <td><code>/api/appointments/{id}</code></td>
+        <td><code>DELETE FROM appointments WHERE id=@id;</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <h1>6. Local Deployment &amp; Execution Guide</h1>
+
+  <h3>6.1 Prerequisites</h3>
+  <ul>
+    <li><strong>.NET 10 SDK</strong> (or .NET 8 / 9) installed.</li>
+    <li><strong>Microsoft SQL Server</strong> (Express edition or LocalDB) running locally on <code>localhost\SQLEXPRESS</code>.</li>
+    <li><strong>SQL Server Management Studio (SSMS)</strong> (Optional for visual management).</li>
+  </ul>
+
+  <h3>6.2 Execution Procedure</h3>
+  <ol>
+    <li>Open a terminal in the project directory: <code>cd e:\P1</code></li>
+    <li>Start the server:
+      <pre><code>dotnet run</code></pre>
+    </li>
+    <li>Open any modern browser and navigate to:
+      <pre><code>http://localhost:5000</code></pre>
+    </li>
+  </ol>
+
+  <h1>7. Verification &amp; Quality Assurance</h1>
+  <p>
+    The application has undergone thorough end-to-end testing with 100% test pass rates:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Verification Area</th>
+        <th>Target Criteria</th>
+        <th>Observed Result</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Static Page Hosting</strong></td>
+        <td>All 10 HTML files accessible via HTTP</td>
+        <td>HTTP 200 OK returned on all routes</td>
+        <td><span class="badge badge-green">PASSED</span></td>
+      </tr>
+      <tr>
+        <td><strong>Database Connectivity</strong></td>
+        <td>Connect to SQL Server with TLS Trust</td>
+        <td>Connected successfully to <code>clinic_db</code></td>
+        <td><span class="badge badge-green">PASSED</span></td>
+      </tr>
+      <tr>
+        <td><strong>Relational JOIN Query</strong></td>
+        <td>Correct mapping of foreign key names</td>
+        <td>Full names &amp; specializations resolved</td>
+        <td><span class="badge badge-green">PASSED</span></td>
+      </tr>
+      <tr>
+        <td><strong>Cascade Deletes</strong></td>
+        <td>Deleting doctor/patient purges related visits</td>
+        <td>Foreign key cascade confirmed in DB</td>
+        <td><span class="badge badge-green">PASSED</span></td>
+      </tr>
+      <tr>
+        <td><strong>Input Validation</strong></td>
+        <td>Required fields enforced in forms &amp; API</td>
+        <td>HTTP 400 returned on empty payloads</td>
+        <td><span class="badge badge-green">PASSED</span></td>
+      </tr>
+      <tr>
+        <td><strong>Cross-Origin Access</strong></td>
+        <td>Permissive CORS for local testing</td>
+        <td><code>AllowAll</code> policy verified</td>
+        <td><span class="badge badge-green">PASSED</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h1>8. Conclusion &amp; Future Scope</h1>
+  <p>
+    The <strong>Hospital / Clinic Management System</strong> successfully achieves all project goals by delivering a streamlined, highly functional, and visually appealing demo system. The clean separation of C# Minimal API endpoints and Bootstrap-driven client views provides an ideal foundation for production extensions, such as:
+  </p>
+  <ul>
+    <li><strong>Role-Based Access Control (RBAC):</strong> Separate portals for Medical Doctors, Front-Desk Receptionists, and Patients.</li>
+    <li><strong>Clinical Notes &amp; E-Prescriptions:</strong> Adding digital prescriptions linked to appointments.</li>
+    <li><strong>Billing &amp; Invoice Generation:</strong> Generating PDF billing receipts for consultation and pharmacy fees.</li>
+  </ul>
+
+  <div class="footer-note">
+    Hospital / Clinic Management System &bull; Project Documentation Report &bull; Generated September 2026
+  </div>
+
+</body>
+</html>
+

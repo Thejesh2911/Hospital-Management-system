@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctors - ClinicCare Management</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom Modern Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Modern Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand brand-title" href="dashboard.html">
+        <span class="p-2 rounded-3 bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+          <i class="bi bi-hospital"></i>
+        </span>
+        ClinicCare <span class="brand-badge">Demo</span>
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="dashboard.html">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="patients.html">
+              <i class="bi bi-people-fill"></i> Patients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom active" href="doctors.html">
+              <i class="bi bi-person-badge-fill"></i> Doctors
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="appointments.html">
+              <i class="bi bi-calendar2-check-fill"></i> Appointments
+            </a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="add_doctor.html" class="btn btn-clinic-primary btn-sm">
+            <i class="bi bi-person-plus"></i> Add Doctor
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container my-4 flex-grow-1">
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+      <div>
+        <h2 class="fw-bold mb-1" style="color: #0f172a;">
+          <i class="bi bi-person-badge text-success me-1"></i> Medical Doctors
+        </h2>
+        <p class="text-secondary mb-0">Clinic physicians, active specialties, and OPD contact lines</p>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <div class="search-input-group">
+          <i class="bi bi-search"></i>
+          <input 
+            type="text" 
+            id="search-box" 
+            class="form-control" 
+            placeholder="Search doctor or specialty..." 
+            onkeyup="filterDoctors()"
+          >
+        </div>
+        <a href="add_doctor.html" class="btn btn-clinic-primary">
+          <i class="bi bi-plus-lg"></i> Register Doctor
+        </a>
+      </div>
+    </div>
+
+    <!-- Doctors Card & Table -->
+    <div class="card-modern">
+      <div class="p-3 px-4 border-bottom d-flex justify-content-between align-items-center bg-light-subtle">
+        <h6 class="fw-bold mb-0 text-secondary">
+          Active Physicians (<span id="count-doctors" class="text-success fw-bold">0</span>)
+        </h6>
+        <span class="badge bg-white text-secondary border">Live SQL Server Data</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-modern align-middle">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 70px;">ID</th>
+              <th scope="col">Doctor Name</th>
+              <th scope="col">Medical Specialization</th>
+              <th scope="col">Phone Contact</th>
+              <th scope="col" class="text-end" style="width: 170px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="doctors-tbody">
+            <tr>
+              <td colspan="5" class="empty-state-box">
+                <div class="spinner-border text-primary" role="status"></div>
+                <div class="mt-2 text-muted">Loading doctor directory...</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="clinic-footer text-center">
+    <div class="container">
+      <p class="mb-1 fw-semibold text-secondary">🏥 Hospital / Clinic Management System &bull; Fullstack Demo</p>
+      <small class="text-muted">Built with Python Flask + Microsoft SQL Server (SSMS) + Bootstrap 5</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Helper -->
+  <script src="js/api.js"></script>
+  <script>
+    let doctorsData = [];
+
+    async function loadDoctors() {
+      try {
+        doctorsData = await apiGet('/doctors');
+        renderDoctors(doctorsData);
+      } catch (err) {
+        console.error(err);
+        showToast('Error loading doctors: ' + err.message, 'error');
+      }
+    }
+
+    function renderDoctors(doctors) {
+      document.getElementById('count-doctors').innerText = doctors.length;
+      const tbody = document.getElementById('doctors-tbody');
+
+      if (doctors.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state-box">
+              <div class="empty-state-icon"><i class="bi bi-person-badge"></i></div>
+              <h6 class="fw-bold">No doctors found</h6>
+              <p class="text-muted small">No physicians match your query. Add a new doctor using the button above.</p>
+              <a href="add_doctor.html" class="btn btn-clinic-primary btn-sm">+ Register Doctor</a>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = doctors.map(d => `
+        <tr>
+          <td><span class="badge bg-light text-secondary border">#${d.id}</span></td>
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <div class="avatar-circle avatar-teal">${getInitials(d.name)}</div>
+              <div>
+                <div class="fw-bold text-dark">${d.name}</div>
+                <small class="text-muted">Attending Specialist</small>
+              </div>
+            </div>
+          </td>
+          <td>${getSpecialtyBadge(d.specialization)}</td>
+          <td>
+            ${d.phone 
+              ? `<a href="tel:${d.phone}" class="text-decoration-none fw-semibold text-dark"><i class="bi bi-telephone text-success me-1"></i> ${d.phone}</a>` 
+              : '<span class="text-muted">-</span>'}
+          </td>
+          <td class="text-end">
+            <div class="btn-group btn-group-sm">
+              <a href="edit_doctor.html?id=${d.id}" class="btn btn-outline-secondary py-1 px-2 rounded-start-2" title="Edit Doctor">
+                <i class="bi bi-pencil-square"></i> Edit
+              </a>
+              <button onclick="deleteDoctor(${d.id}, '${d.name.replace(/'/g, "\\'")}')" class="btn btn-outline-danger py-1 px-2 rounded-end-2" title="Delete Doctor">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterDoctors() {
+      const q = document.getElementById('search-box').value.toLowerCase().trim();
+      const filtered = doctorsData.filter(d => 
+        (d.name && d.name.toLowerCase().includes(q)) || 
+        (d.specialization && d.specialization.toLowerCase().includes(q)) ||
+        (d.phone && d.phone.toLowerCase().includes(q))
+      );
+      renderDoctors(filtered);
+    }
+
+    async function deleteDoctor(id, name) {
+      if (!confirm(`Are you sure you want to remove ${name} (ID: #${id})?\n\nNote: Any appointments booked under this doctor will also be deleted.`)) {
+        return;
+      }
+
+      try {
+        await apiDelete(`/doctors/${id}`);
+        showToast(`Doctor ${name} deleted successfully`, 'success');
+        loadDoctors();
+      } catch (err) {
+        console.error(err);
+        showToast('Failed to delete doctor: ' + err.message, 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDoctors);
+  </script>
+</body>
+</html>
